@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import java.util.Optional;
  * The @Service annotation marks this class as a Spring service component.
  * The @Transactional annotation (at class or method level) ensures that methods are executed
  * within a database transaction, which is crucial for data consistency.
+ * Now includes implementations for filtering and summary calculations.
  */
 @Service
 @Transactional
@@ -31,25 +33,16 @@ public class ExpenseServiceImpl implements ExpenseService {
         this.expenseRepository = expenseRepository;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<Expense> getAllExpenses() {
         return expenseRepository.findAll();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Optional<Expense> getExpenseById(Long id) {
         return expenseRepository.findById(id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Expense createExpense(Expense expense) {
         if (expense.getDate() == null) {
@@ -58,9 +51,6 @@ public class ExpenseServiceImpl implements ExpenseService {
         return expenseRepository.save(expense);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Optional<Expense> updateExpense(Long id, Expense expenseDetails) {
         return expenseRepository.findById(id)
@@ -75,9 +65,6 @@ public class ExpenseServiceImpl implements ExpenseService {
                 });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean deleteExpense(Long id) {
         if (expenseRepository.existsById(id)) {
@@ -85,5 +72,52 @@ public class ExpenseServiceImpl implements ExpenseService {
             return true;
         }
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Expense> getExpensesByCategory(String category) {
+        return expenseRepository.findByCategory(category);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Expense> getExpensesByDateRange(LocalDate startDate, LocalDate endDate) {
+        // Basic validation for date range
+        if (startDate == null || endDate == null) {
+            // Or throw an IllegalArgumentException
+            return List.of(); // Return empty list if dates are null
+        }
+        if (startDate.isAfter(endDate)) {
+            // Or throw an IllegalArgumentException
+            return List.of(); // Return empty list if start date is after end date
+        }
+        return expenseRepository.findByDateBetween(startDate, endDate);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BigDecimal getTotalExpensesByDateRange(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
+            return BigDecimal.ZERO;
+        }
+        return expenseRepository.sumAmountByDateBetween(startDate, endDate);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BigDecimal getTotalExpensesByCategory(String category) {
+        if (category == null || category.trim().isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        return expenseRepository.sumAmountByCategory(category);
     }
 }

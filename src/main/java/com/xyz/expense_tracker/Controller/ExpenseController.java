@@ -1,10 +1,11 @@
-
+// src/main/java/com/xyz/expense_tracker/Controller/ExpenseController.java
 package com.xyz.expense_tracker.Controller;
 
 import com.xyz.expense_tracker.Entity.Expense;
 import com.xyz.expense_tracker.Service.ExpenseService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,6 +14,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 
 import jakarta.validation.Valid;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +25,7 @@ import java.util.Optional;
  * REST Controller for managing Expense entities.
  * Handles HTTP requests related to expenses (GET, POST, PUT, DELETE).
  * Now interacts with the ExpenseService layer for business logic.
- * Includes error handling for validation failures.
+ * Includes error handling for validation failures and new endpoints for filtering/summary.
  */
 @RestController
 @RequestMapping("/api/expenses")
@@ -69,6 +72,32 @@ public class ExpenseController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+
+    @GetMapping("/filter/by-category")
+    public List<Expense> getExpensesByCategory(@RequestParam String category) {
+        return expenseService.getExpensesByCategory(category);
+    }
+
+    @GetMapping("/filter/by-date-range")
+    public List<Expense> getExpensesByDateRange(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return expenseService.getExpensesByDateRange(startDate, endDate);
+    }
+
+    @GetMapping("/summary/total-by-date-range")
+    public BigDecimal getTotalExpensesByDateRange(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return expenseService.getTotalExpensesByDateRange(startDate, endDate);
+    }
+
+
+    @GetMapping("/summary/total-by-category")
+    public BigDecimal getTotalExpensesByCategory(@RequestParam String category) {
+        return expenseService.getTotalExpensesByCategory(category);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
