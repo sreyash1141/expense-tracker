@@ -1,12 +1,12 @@
 // src/main/java/com/xyz/expense_tracker/Service/impl/ExpenseServiceImpl.java
-package com.xyz.expense_tracker.Implementations; // <--- Corrected package
+package com.xyz.expense_tracker.Implementations;
 
-import com.xyz.expense_tracker.Entity.Expense;     // <--- Corrected import
-import com.xyz.expense_tracker.Repository.ExpenseRepository; // <--- Corrected import
-import com.xyz.expense_tracker.Service.ExpenseService;     // <--- Corrected import
+import com.xyz.expense_tracker.Entity.Expense;
+import com.xyz.expense_tracker.Repository.ExpenseRepository;
+import com.xyz.expense_tracker.Service.ExpenseService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service; // <--- Ensure this is present
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -20,7 +20,7 @@ import java.util.Optional;
  * The @Transactional annotation (at class or method level) ensures that methods are executed
  * within a database transaction, which is crucial for data consistency.
  */
-@Service // <--- THIS IS CRUCIAL FOR SPRING TO CREATE A BEAN OF THIS CLASS
+@Service
 @Transactional
 public class ExpenseServiceImpl implements ExpenseService {
 
