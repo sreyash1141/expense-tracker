@@ -1,8 +1,8 @@
-// src/main/java/com/xyz/expense_tracker/Controller/ExpenseController.java
-package com.xyz.expense_tracker.Controller; // <--- Corrected package
 
-import com.xyz.expense_tracker.Entity.Expense;     // <--- Corrected import
-import com.xyz.expense_tracker.Service.ExpenseService; // <--- Corrected import
+package com.xyz.expense_tracker.Controller;
+
+import com.xyz.expense_tracker.Entity.Expense;
+import com.xyz.expense_tracker.Service.ExpenseService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,5 +1,5 @@
-// src/main/java/com/xyz/expense_tracker/Entity/Expense.java
-package com.xyz.expense_tracker.Entity; // <--- Corrected package
+
+package com.xyz.expense_tracker.Entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
