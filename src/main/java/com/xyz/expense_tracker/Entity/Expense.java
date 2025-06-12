@@ -1,12 +1,13 @@
-
+// src/main/java/com/xyz/expense_tracker/Entity/Expense.java
 package com.xyz.expense_tracker.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -14,12 +15,17 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 
-@Entity
+/**
+ * Represents an Expense document in MongoDB.
+ * This class maps to a collection named 'expenses' (by default, as it's the class name lowercase + plural).
+ * Includes validation annotations for data integrity.
+ */
+@Document(collection = "expenses") // Marks this class as a MongoDB document, specifying the collection name
 public class Expense {
 
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id; // MongoDB uses String IDs (ObjectId) by default
 
     @NotBlank(message = "Description cannot be empty")
     @Size(max = 255, message = "Description cannot exceed 255 characters")
@@ -31,15 +37,17 @@ public class Expense {
 
     @NotNull(message = "Date cannot be null")
     @PastOrPresent(message = "Date cannot be in the future")
-    private LocalDate date;
+    private LocalDate date; // Stored as ISODate in MongoDB
 
     @NotBlank(message = "Category cannot be empty")
     @Size(max = 100, message = "Category cannot exceed 100 characters")
     private String category;
 
+    // Default constructor (recommended for Spring Data MongoDB)
     public Expense() {
     }
 
+    // Constructor with fields for convenient object creation
     public Expense(String description, BigDecimal amount, LocalDate date, String category) {
         this.description = description;
         this.amount = amount;
@@ -47,11 +55,13 @@ public class Expense {
         this.category = category;
     }
 
-    public Long getId() {
+    // --- Getters and Setters for all fields ---
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -90,7 +100,7 @@ public class Expense {
     @Override
     public String toString() {
         return "Expense{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", description='" + description + '\'' +
                 ", amount=" + amount +
                 ", date=" + date +
